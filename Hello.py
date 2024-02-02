@@ -55,10 +55,13 @@ if uploaded_file is not None:
 
     # ***NEW***Remove rows with NaN values
     excel = excel.dropna()
+    unique_name = excel['Fragrance'].unique()
+    name = st.selectbox("Name of Fragrance to Analyze", unique_name)
+    
+else: st.write("Upload your Excel Document to Start")
 #Define function to check for a hyphen, then only return strings with hyphen
 hyphen = '-'
-unique_name = excel['Fragrance'].unique()
-name = st.selectbox("Name of Fragrance to Analyze", unique_name)
+
 def hyphen_string(value):
     if hyphen in value:
         return (value.split(hyphen)[0])
@@ -110,8 +113,9 @@ def run_HT_average():
 New_excel = pd.DataFrame()
 New_excel = split_str(excel)
 New_excel['Fragrance'] = New_excel['Fragrance'].astype(str)
-st.header("Monday.com Data")
-st.write(New_excel)
+if st.button("Display Monday.com Data"):
+    st.header("Monday.com Data")
+    st.write(New_excel)
 
 st.title("Run Hot Throw Analysis")
 #Buttoms to run functions for Personal and Fragrance Hot throw
