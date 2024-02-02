@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import streamlit as st
+import streamlit as st, pandas as pd
+import subprocess
 from streamlit.logger import get_logger
 
 LOGGER = get_logger(__name__)
@@ -22,43 +23,13 @@ def run():
     st.set_page_config(
         page_title="Hot Throw Testing")
 
-import streamlit as st, pandas as pd
-import subprocess
+
 def install_openpyxl():
     try:
         subprocess.run(["pip", "install", "openpyxl"])
         print("openpyxl installed sucessfully!")
     except Exception as e:
         print(f"Error installing openpyxl: {e}")
-#run the function
-install_openpyxl()
-st.title('Hot Throw Testing')
-# Create a file uploader widget
-uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
-excel = pd.DataFrame()
-# Check if a file was uploaded
-if uploaded_file is not None:
-    # Read the uploaded file into a pandas DataFrame
-    excel = pd.read_excel(uploaded_file,dtype=str,skiprows=2)
-
-  # Check if the required columns exist in the DataFrame
-    required_columns = ['Name', 'Door', 'Hot Throw Score', 'Fragrance']
-    if not set(required_columns).issubset(excel.columns):
-        st.error("The uploaded file does not contain the required columns.")
-        st.stop()
-
-    # Select the required columns
-    excel = excel[required_columns]
-
-    # Rename the 'Hot Throw Score' column to 'HTS'
-    excel = excel.rename(columns={'Hot Throw Score': 'HTS'})
-
-    # ***NEW***Remove rows with NaN values
-    excel = excel.dropna()
-    unique_name = excel['Fragrance'].unique()
-    name = st.selectbox("Name of Fragrance to Analyze", unique_name)
-    
-else: st.write("Upload your Excel Document to Start")
 #Define function to check for a hyphen, then only return strings with hyphen
 hyphen = '-'
 
@@ -109,10 +80,42 @@ def run_HT_average():
     st.write("Running HT Average")
     st. write(HT_average)
 
+#run the function
+install_openpyxl()
+st.title('Hot Throw Testing')
+# Create a file uploader widget
+uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
+excel = pd.DataFrame()
+# Check if a file was uploaded
+if uploaded_file is not None:
+    # Read the uploaded file into a pandas DataFrame
+    excel = pd.read_excel(uploaded_file,dtype=str,skiprows=2)
+
+  # Check if the required columns exist in the DataFrame
+    required_columns = ['Name', 'Door', 'Hot Throw Score', 'Fragrance']
+    if not set(required_columns).issubset(excel.columns):
+        st.error("The uploaded file does not contain the required columns.")
+        st.stop()
+
+    # Select the required columns
+    excel = excel[required_columns]
+
+    # Rename the 'Hot Throw Score' column to 'HTS'
+    excel = excel.rename(columns={'Hot Throw Score': 'HTS'})
+
+    # ***NEW***Remove rows with NaN values
+    excel = excel.dropna()
+    unique_name = excel['Fragrance'].unique()
+    name = st.selectbox("Name of Fragrance to Analyze", unique_name)
+    New_excel = pd.DataFrame()
+    New_excel = split_str(excel)
+    New_excel['Fragrance'] = New_excel['Fragrance'].astype(str)
+else: st.write("Upload your Excel Document to Start")
+
+
+
 #apply functions to dataframes
-New_excel = pd.DataFrame()
-New_excel = split_str(excel)
-New_excel['Fragrance'] = New_excel['Fragrance'].astype(str)
+
 if st.button("Display Monday.com Data"):
     st.header("Monday.com Data")
     st.write(New_excel)
