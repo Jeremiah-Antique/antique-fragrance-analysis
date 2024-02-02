@@ -20,11 +20,18 @@ LOGGER = get_logger(__name__)
 
 def run():
     st.set_page_config(
-        page_title="Hello",
-        page_icon="👋",
-    )
+        page_title="Hot Throw Testing")
 
 import streamlit as st, pandas as pd
+import subprocess
+def install_openpyxl():
+    try:
+        subprocess.run(["pip", "install", "openpyxl"])
+        print("openpyxl installed sucessfully!")
+    except Exception as e:
+        print(f"Error installing openpyxl: {e}")
+#run the function
+install_openpyxl()
 st.title('Hot Throw Testing')
 # Create a file uploader widget
 uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
