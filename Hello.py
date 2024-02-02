@@ -81,7 +81,7 @@ def run_HT_average():
     st. write(HT_average)
 
 #run the function
-install_openpyxl()
+#install_openpyxl()
 st.title('Hot Throw Testing')
 # Create a file uploader widget
 uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
@@ -110,23 +110,22 @@ if uploaded_file is not None:
     New_excel = pd.DataFrame()
     New_excel = split_str(excel)
     New_excel['Fragrance'] = New_excel['Fragrance'].astype(str)
+    #apply functions to dataframes
+    if st.button("Display Monday.com Data"):
+        st.header("Monday.com Data")
+        st.write(New_excel)
+
+    st.title("Run Hot Throw Analysis")
+#Buttoms to run functions for Personal and Fragrance Hot throw
+    if st.button("Fragrance Hot Throw Average"):
+        HT_AVG = Average_HTS(New_excel,name)
+        st.write("Hot Throw Average for", name,"is",HT_AVG)
+
+# create button to run Personal Average
+    if st.button("Personal Hot Throw Average"):
+        run_Personal_average()
 else: st.write("Upload your Excel Document to Start")
 
 
 
-#apply functions to dataframes
 
-if st.button("Display Monday.com Data"):
-    st.header("Monday.com Data")
-    st.write(New_excel)
-
-st.title("Run Hot Throw Analysis")
-#Buttoms to run functions for Personal and Fragrance Hot throw
-if st.button("Fragrance Hot Throw Average"):
-    HT_AVG = Average_HTS(New_excel,name)
-    st.write("Hot Throw Average for", name,"is",HT_AVG)
-
-# create button to run Personal Average
-if st.button("Personal Hot Throw Average"):
-    run_Personal_average()
-    
