@@ -11,15 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import subprocess, sys
-def install_openpyxl():
-    try:
-        subprocess.run([sys.executable, "-m","pip", "install", "openpyxl"])
-        print("openpyxl installed sucessfully!")
-    except Exception as e:
-        print(f"Error installing openpyxl: {e}")
-#install openpyxl
-install_openpyxl()
+
 import streamlit as st, pandas as pd
 
 from streamlit.logger import get_logger
