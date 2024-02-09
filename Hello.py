@@ -121,18 +121,22 @@ if uploaded_file is not None:
 
   # Check if the required columns exist in the DataFrame
     required_columns = ['Name', 'Door', 'Hot Throw Score', 'Fragrance']
-    if not set(required_columns).issubset(excel.columns):
+    required_columns_2 = ['Name','Hot Throw Score', 'Fragrance']
+    if set(required_columns).issubset(excel.columns):
+        #Select the required columns
+        excel = excel[required_columns]
+    elif set(required_columns_2).issubset(excel.columns):
+        excel = excel[required_columns_2]
+    else:  
         st.error("The uploaded file does not contain the required columns.")
         st.stop()
-
-    # Select the required columns
-    excel = excel[required_columns]
 
     # Rename the 'Hot Throw Score' column to 'HTS'
     excel = excel.rename(columns={'Hot Throw Score': 'HTS'})
 
     # ***NEW***Remove rows with NaN values
-    excel = excel.dropna()
+    mask = ~excel.columns.isin(['Door'])
+    excel = excel.dropna(subset=excel.columns[mask])
     unique_name = excel['Fragrance'].unique()
     name = st.selectbox("Name of Fragrance to Analyze", unique_name)
     New_excel = pd.DataFrame()
