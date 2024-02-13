@@ -87,6 +87,30 @@ def D_Average_HTS(df_name):
 
   data = reformat(data)
   return data
+def Accurate_Average(df_name,name):
+    # Filter data where 'Fragrance' equals the specified name
+    filtered_df = df_name[df_name['Fragrance'] == name]
+
+    # Group the filtered data by 'Door', 'Fragrance', and 'Agree or Disagree'
+    grouped_df = filtered_df.groupby(['Door', 'Fragrance'])
+
+    # Calculate the average 'Agree or Disagree' for each grouping
+    average_accuracy = grouped_df['Agree or Disagree'].mean()
+
+    # Create a new DataFrame with the results
+    data = pd.DataFrame({
+        'Door': average_accuracy.index.get_level_values(0),
+        'Fragrance': average_accuracy.index.get_level_values(1),
+        'Average_Accuracy': average_accuracy})
+    def reformat(df_name):
+      #rename columns, then drop them and reset index to clean up df
+      df_name = df_name.rename(columns={'Fragrance': 'Frag', 'Door': 'Door'})
+      df_name = df_name.drop(['Door', 'Frag'], axis=1)
+      df_name = df_name.reset_index()
+      return df_name
+
+    data = reformat(data)
+    return data
 #function to calculate average HTS and group by whatever column you call for
 def Average_HTS(df_name,name):
         Avg_HTS = df_name[df_name['Fragrance'].str.strip() == name]['HTS'].mean()
@@ -113,7 +137,14 @@ def run_door_average():
     st. write(HT_Name)
     fig= px.bar(HT_Name, x = 'Door', y= 'Average_HTS',title= 'HT Scores by Door')
     st.plotly_chart(fig)
-
+def run_accuracy_average():
+    HT_average = Accurate_Average(New_excel,name)
+    st.write("Running fragrance Accuracy average")
+    HT_Name = pd.DataFrame()
+    HT_Name = HT_average
+    st. write(HT_Name)
+    fig= px.bar(HT_Name, x = 'Door', y= 'Average_Accuracy',title= 'Accuracy Scores by Door')
+    st.plotly_chart(fig)
 #run the function
 
 st.title('Hot Throw Testing')
@@ -126,7 +157,7 @@ if uploaded_file is not None:
     excel = pd.read_excel(uploaded_file,dtype=str,skiprows=2)
 
   # Check if the required columns exist in the DataFrame
-    required_columns = ['Name', 'Door', 'Hot Throw Score', 'Fragrance','Agree or Disagree']
+    required_columns = ['Name', 'Door', 'Hot Throw Score', 'Fragrance', 'Agree or Disagree']
     required_columns_2 = ['Name','Hot Throw Score', 'Fragrance']
     if set(required_columns).issubset(excel.columns):
         #Select the required columns
@@ -141,7 +172,7 @@ if uploaded_file is not None:
     excel = excel.rename(columns={'Hot Throw Score': 'HTS'})
 
     # ***NEW***Remove rows with NaN values
-    mask = ~excel.columns.isin(['Door','Agree or Disagree'])
+    mask = ~excel.columns.isin(['Door', 'Agree or Disagree'])
     excel = excel.dropna(subset=excel.columns[mask])
     unique_name = excel['Fragrance'].unique()
     name = st.selectbox("Name of Fragrance to Analyze", unique_name)
@@ -172,7 +203,9 @@ if uploaded_file is not None:
         # create button to run Personal Average
         if st.button("Personal Hot Throw Average"):
             run_Personal_average()
-    
+    st.header("Fragrance Accuracy Analysis")
+    if st.button("Accuracy Average"):
+        run_accuracy_average()
 else: st.write("Upload your Excel Document to Start")  
 
 
