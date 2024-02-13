@@ -126,7 +126,7 @@ if uploaded_file is not None:
     excel = pd.read_excel(uploaded_file,dtype=str,skiprows=2)
 
   # Check if the required columns exist in the DataFrame
-    required_columns = ['Name', 'Door', 'Hot Throw Score', 'Fragrance']
+    required_columns = ['Name', 'Door', 'Hot Throw Score', 'Fragrance','Agree or Disagree']
     required_columns_2 = ['Name','Hot Throw Score', 'Fragrance']
     if set(required_columns).issubset(excel.columns):
         #Select the required columns
@@ -141,7 +141,7 @@ if uploaded_file is not None:
     excel = excel.rename(columns={'Hot Throw Score': 'HTS'})
 
     # ***NEW***Remove rows with NaN values
-    mask = ~excel.columns.isin(['Door'])
+    mask = ~excel.columns.isin(['Door','Agree or Disagree'])
     excel = excel.dropna(subset=excel.columns[mask])
     unique_name = excel['Fragrance'].unique()
     name = st.selectbox("Name of Fragrance to Analyze", unique_name)
