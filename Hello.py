@@ -38,7 +38,13 @@ def split_str(df_name):
     new_df = df_name.copy()
     new_df['HTS_split'] = df_name['HTS'].apply(hyphen_string)
     new_df['HTS'] = pd.to_numeric(new_df['HTS_split'], errors='coerce')
-    return new_df.drop(columns=['HTS_split'])
+    
+    # Apply hyphen_string function to 'Agree or Disagree' column
+    new_df['agree_split'] = df_name['Agree or Disagree'].apply(hyphen_string)
+    new_df['Agree or Disagree'] = pd.to_numeric(new_df['agree_split'], errors='coerce')
+    
+    # Drop temporary columns
+    return new_df.drop(columns=['HTS_split', 'agree_split'])
 #function to calculate average HTS for each person
 def P_Average_HTS(df_name):
     # Group the data by 'Name' and 'Fragrance'.
