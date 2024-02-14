@@ -29,7 +29,7 @@ def run():
 hyphen = '-'
 
 def hyphen_string(value):
-    if hyphen in value:
+    if pd.notna(value) and hyphen in value:
         return (value.split(hyphen)[0])
     else:
         return ''
